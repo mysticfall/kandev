@@ -568,9 +568,11 @@ The profile editor exposes remote shell and agent-readiness checks. Backend/API 
 
 The remote-auth card is built from the currently enabled agents. Depending on an agent's declared methods, it can copy selected local credential files, resolve a stored secret into that agent's authentication environment variable, or run an agent-specific setup script on the remote host. GitHub can use an explicitly selected `GITHUB_TOKEN` secret as an unmanaged profile override; Kandev does not copy the host-active `gh` token.
 
-OpenCode credential copies merge top-level provider entries with the existing remote `auth.json`. Remote-only providers remain, and the selected host entry replaces the same provider on the remote. If either file is unreadable or is not a JSON object, Kandev leaves the remote file unchanged and reports the credential-copy error.
+OpenCode V1 credential copies merge top-level provider entries with the existing remote `auth.json`. Remote-only providers remain, and the selected host entry replaces the same provider on the remote. If either file is unreadable or is not a JSON object, Kandev leaves the remote file unchanged and reports the credential-copy error.
 
-These transfers write sensitive material under the remote user's home and are best-effort. Verify authentication on the remote after saving. Although the profile editor also stores Git name/email controls for SSH, the current SSH runtime does not apply them; configure Git identity on the remote host yourself.
+For managed OpenCode V2, **Copy auth files** instead exports accounts from the Kandev host and imports them through the CLI into each configured session before ACP starts. This requires V2 2.1.2 or newer and matching controller and worker builds. Existing destination credential IDs, refreshed tokens, and active-account selections are preserved. Provisioning errors stop launch rather than starting an unauthenticated agent. Sign in with V2 on the Kandev host before selecting this method. Retaining a workspace alone does not retain provider history or recover a lost Kubernetes bootstrap environment.
+
+Legacy file transfers write sensitive material under the remote user's home and are best-effort; selected V2 provisioning must succeed before launch. Verify authentication on the remote after saving. Although the profile editor also stores Git name/email controls for SSH, the current SSH runtime does not apply them; configure Git identity on the remote host yourself.
 
 </details>
 

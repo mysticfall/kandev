@@ -125,6 +125,7 @@ func (s *Server) setupRoutes() {
 
 		// Process control
 		api.POST("/agent/configure", s.handleAgentConfigure)
+		api.POST("/agent/opencode/credentials", s.handleOpenCodeCredentials)
 		api.POST("/agent/managed-runtime/cache-repair", s.handleManagedRuntimeCacheRepair)
 		api.POST("/agent/background-work/action", s.handleBackgroundWorkAction)
 		api.POST("/start", s.handleStart)

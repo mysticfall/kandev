@@ -311,6 +311,7 @@ type Manager struct {
 	turnOutcomeRecorder   TurnOutcomeRecorder
 	turnOutcomeInstanceID string
 	startMu               sync.Mutex
+	credentialImport      bool // guarded by startMu
 	admissionMu           sync.Mutex
 	admissionCount        int
 	admissionDrained      chan struct{}
@@ -1758,6 +1759,9 @@ func (m *Manager) Start(ctx context.Context) error {
 func (m *Manager) StartWithGeneration(ctx context.Context) (uint64, error) {
 	m.startMu.Lock()
 	defer m.startMu.Unlock()
+	if m.credentialImport {
+		return 0, errors.New("OpenCode credential import is in progress")
+	}
 	release, err := m.admitStart()
 	if err != nil {
 		return 0, err
@@ -2278,6 +2282,9 @@ func (m *Manager) ConfigureWithEnvironment(command string, agentArgs []string, a
 func (m *Manager) configure(command string, agentArgs []string, agentArgsPresent bool, env map[string]string, continueCommand string, continueArgs []string, continueArgsPresent, replaceEnv bool) error {
 	m.startMu.Lock()
 	defer m.startMu.Unlock()
+	if m.credentialImport {
+		return errors.New("OpenCode credential import is in progress")
+	}
 
 	if m.Status() == StatusRunning || m.Status() == StatusStarting {
 		return fmt.Errorf("cannot configure while agent is running")

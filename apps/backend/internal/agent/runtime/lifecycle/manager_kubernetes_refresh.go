@@ -203,6 +203,9 @@ func (m *Manager) prepareRestartedKubernetesAgentctl(
 	); err != nil {
 		return "", fmt.Errorf("configure agent after Kubernetes restart: %w", err)
 	}
+	if err := provisionOpenCodeCredentials(ctx, execution, client); err != nil {
+		return "", err
+	}
 	if _, err := client.Start(ctx); err != nil {
 		return "", fmt.Errorf("start agent after Kubernetes restart: %w", err)
 	}

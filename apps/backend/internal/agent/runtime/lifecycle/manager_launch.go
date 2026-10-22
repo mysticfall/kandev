@@ -3072,6 +3072,9 @@ func (m *Manager) configureAndStartAgent(ctx context.Context, execution *AgentEx
 		return "", fmt.Errorf("failed to configure agent: %w", err)
 	}
 
+	if err := provisionOpenCodeCredentials(ctx, execution, client); err != nil {
+		return "", err
+	}
 	fullCommand, err := client.Start(ctx)
 	if err != nil {
 		m.updateExecutionError(execution.ID, "failed to start agent: "+err.Error())
